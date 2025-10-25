@@ -1,0 +1,5 @@
+{
+  "name": "Arch M-A",
+  "description": "Upload a building image and our AI will generate 10 high-resolution architectural visualizations, including top, side, facade, isometric, and perspective views, while preserving the original design and details.",
+  "requestFramePermissions": []
+}
