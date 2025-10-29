@@ -1,8 +1,8 @@
 export const translations = {
   // Header
   headerTitle: {
-    en: 'Architectural Vision Generator',
-    ar: 'مولد الرؤية المعمارية',
+    en: 'ARCH.MA',
+    ar: 'ARCH.MA',
   },
   headerTagline: {
     en: 'AI-Powered Multi-View Renderings from a Single Image',
@@ -15,8 +15,24 @@ export const translations = {
   },
   // Image Uploader
   uploadImage: {
-    en: 'Upload Building Image',
-    ar: 'تحميل صورة المبنى',
+    en: 'Upload Building Image(s)',
+    ar: 'تحميل صور المبنى',
+  },
+  addMoreImages: {
+    en: 'Add More Images',
+    ar: 'إضافة المزيد من الصور',
+  },
+  uploadedImagesTitle: {
+    en: 'Uploaded Images',
+    ar: 'الصور المرفوعة',
+  },
+  selectImagePrompt: {
+    en: 'Click an image to select it for generation.',
+    ar: 'انقر على صورة لتحديدها للإنشاء.',
+  },
+  removeImageAriaLabel: {
+    en: 'Remove image',
+    ar: 'إزالة الصورة',
   },
   changeImage: {
     en: 'Change Image',
@@ -51,12 +67,12 @@ export const translations = {
     ar: 'جاهز للإنشاء!',
   },
   welcomeReadyBody: {
-    en: 'Your building image is loaded. Click the "Generate 10 Views" button to let the AI create a stunning set of architectural visualizations.',
-    ar: 'تم تحميل صورة المبنى. انقر على زر "إنشاء 10 مشاهد" للسماح للذكاء الاصطناعي بإنشاء مجموعة مذهلة من التصورات المعمارية.',
+    en: 'Your image(s) are loaded. Select one and click "Generate 10 Views" to let the AI create a stunning set of architectural visualizations.',
+    ar: 'تم تحميل صورك. اختر واحدة وانقر على زر "إنشاء 10 مشاهد" للسماح للذكاء الاصطناعي بإنشاء مجموعة مذهلة من التصورات المعمارية.',
   },
   welcomeStartTitle: {
-    en: 'Welcome to the Vision Generator',
-    ar: 'أهلاً بك في مولد الرؤية',
+    en: 'Welcome to ARCH.MA',
+    ar: 'أهلاً بك في ARCH.MA',
   },
   welcomeStartBody: {
     en: 'Upload a single image of a building to get started. Our AI will generate 10 different high-resolution views, from site plans to human-eye perspectives.',
@@ -67,13 +83,21 @@ export const translations = {
     en: 'Generated Views',
     ar: 'المشاهد التي تم إنشاؤها',
   },
-  download: {
-    en: 'Download',
-    ar: 'تنزيل',
+  downloadImage: {
+    en: 'Download Image',
+    ar: 'تنزيل الصورة',
   },
-  downloadAriaLabel: {
-    en: 'Download',
-    ar: 'تنزيل',
+  downloadAll: {
+    en: 'Download All',
+    ar: 'تنزيل الكل',
+  },
+  downloadAllAriaLabel: {
+    en: 'Download all generated views as a zip file',
+    ar: 'تنزيل جميع المشاهد التي تم إنشاؤها كملف مضغوط',
+  },
+  zipping: {
+    en: 'Zipping...',
+    ar: 'جاري الضغط...',
   },
   // Footer
   footerCredit: {

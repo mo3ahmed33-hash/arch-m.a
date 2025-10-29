@@ -12,8 +12,9 @@ import { translations } from './translations';
 import { Footer } from './components/Footer';
 
 function App() {
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,22 +28,60 @@ function App() {
 
   const t = (key: keyof typeof translations) => translations[key][language];
 
-  const handleImageUpload = useCallback((file: File) => {
-    setUploadedFile(file);
+  const handleImageUpload = useCallback((files: FileList) => {
+    const newFiles = Array.from(files);
+    if (newFiles.length === 0) return;
+    
     setGeneratedImages([]);
     setError(null);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+
+    let newUrls: string[] = [];
+    let loadedCount = 0;
+
+    newFiles.forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newUrls[index] = reader.result as string;
+        loadedCount++;
+        if (loadedCount === newFiles.length) {
+          const totalFiles = uploadedFiles.length + newFiles.length;
+          setUploadedFiles(prev => [...prev, ...newFiles]);
+          setImagePreviewUrls(prev => [...prev, ...newUrls]);
+          if (selectedImageIndex === null) {
+            setSelectedImageIndex(0);
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }, [selectedImageIndex, uploadedFiles.length]);
+
+  const handleRemoveImage = useCallback((indexToRemove: number) => {
+    const newFiles = uploadedFiles.filter((_, i) => i !== indexToRemove);
+    const newUrls = imagePreviewUrls.filter((_, i) => i !== indexToRemove);
+    
+    setUploadedFiles(newFiles);
+    setImagePreviewUrls(newUrls);
+
+    if (selectedImageIndex === indexToRemove) {
+      setSelectedImageIndex(newFiles.length > 0 ? 0 : null);
+    } else if (selectedImageIndex !== null && selectedImageIndex > indexToRemove) {
+      setSelectedImageIndex(prev => prev! - 1);
+    }
+  }, [selectedImageIndex, uploadedFiles, imagePreviewUrls]);
+
+  const handleSelectImage = useCallback((index: number) => {
+    setSelectedImageIndex(index);
   }, []);
 
   const handleGenerate = async () => {
-    if (!uploadedFile || !imagePreviewUrl) {
-      setError('Please upload an image first.');
+    if (selectedImageIndex === null || !uploadedFiles[selectedImageIndex] || !imagePreviewUrls[selectedImageIndex]) {
+      setError('Please upload and select an image first.');
       return;
     }
+
+    const file = uploadedFiles[selectedImageIndex];
+    const imageUrl = imagePreviewUrls[selectedImageIndex];
 
     setIsLoading(true);
     setGeneratedImages([]);
@@ -50,10 +89,9 @@ function App() {
     setProgressMessage('Initializing generation process...');
 
     try {
-      // The imagePreviewUrl is already a base64 data URL
-      const base64Data = imagePreviewUrl.split(',')[1];
+      const base64Data = imageUrl.split(',')[1];
       
-      const images = await generateArchitecturalViews(base64Data, uploadedFile.type, (message) => {
+      const images = await generateArchitecturalViews(base64Data, file.type, (message) => {
         setProgressMessage(message);
       });
       setGeneratedImages(images);
@@ -76,12 +114,15 @@ function App() {
               <h2 className="text-xl font-bold mb-4 text-cyan-400">{t('controlsTitle')}</h2>
               <ImageUploader 
                 onImageUpload={handleImageUpload} 
-                imagePreviewUrl={imagePreviewUrl}
+                imagePreviewUrls={imagePreviewUrls}
                 isLoading={isLoading}
+                onRemoveImage={handleRemoveImage}
+                onSelectImage={handleSelectImage}
+                selectedImageIndex={selectedImageIndex}
               />
               <button
                 onClick={handleGenerate}
-                disabled={!uploadedFile || isLoading}
+                disabled={selectedImageIndex === null || isLoading}
                 className="w-full mt-4 bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg"
               >
                 {isLoading ? t('generatingButton') : t('generateButton')}
@@ -93,7 +134,7 @@ function App() {
             {error && <ErrorDisplay message={error} />}
             {!isLoading && !error && generatedImages.length > 0 && <GeneratedImagesView images={generatedImages} />}
             {!isLoading && !error && generatedImages.length === 0 && (
-                <WelcomeScreen hasImage={!!imagePreviewUrl} />
+                <WelcomeScreen hasImage={uploadedFiles.length > 0} />
             )}
           </div>
         </div>

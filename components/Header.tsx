@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { translations } from '../translations';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { LogoIcon } from './icons/LogoIcon';
 
 export const Header: React.FC = () => {
     const { language } = useLanguage();
@@ -10,9 +11,12 @@ export const Header: React.FC = () => {
     return (
         <header className="bg-gray-800/50 backdrop-blur-sm shadow-lg p-4 sticky top-0 z-10">
             <div className="container mx-auto text-center relative">
-                <h1 className="text-2xl md:text-3xl font-bold text-cyan-400">
-                    {t('headerTitle')}
-                </h1>
+                <div className="flex items-center justify-center gap-3">
+                    <LogoIcon className="h-8 w-auto text-cyan-400" aria-hidden="true" />
+                    <h1 className="text-2xl md:text-3xl font-bold text-cyan-400">
+                        {t('headerTitle')}
+                    </h1>
+                </div>
                 <p className="text-sm md:text-base text-gray-400 mt-1">
                     {t('headerTagline')}
                 </p>
